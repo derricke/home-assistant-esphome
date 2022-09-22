@@ -1,0 +1,6 @@
+substitutions:
+  device_name: office_m5stick
+  device_description: Office M5Stick
+  friendly_name: Office M5Stick
+
+<<: !include common/esp32-m5stick-ble-tracker.yaml
