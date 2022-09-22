@@ -1,0 +1,61 @@
+packages:
+  common: !include common.yaml
+
+external_components:
+  - source:
+      type: git
+      url: https://gitlab.com/geiseri/esphome_extras.git
+    refresh: 1d
+    components: [axp192]
+
+esphome:
+  name: ${device_name}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+i2c:
+  - id: bus_a
+    sda: 21
+    scl: 22
+    scan: true
+  - id: bus_b
+    sda: 32
+    scl: 33
+    scan: true
+
+axp192:
+  id: axp
+  address: 0x34
+  i2c_id: bus_a
+  update_interval: 60s
+
+sensor:
+  - platform: axp192
+    axp192_id: axp
+    id: ${device_name}batterylevel
+    name: ${friendly_name} Battery Level
+
+output:
+  - platform: gpio
+    pin: 10
+    id: red_led
+
+light:
+  - platform: monochromatic
+    id: red_led_light
+    name: "${friendly_name} Red LED"
+    output: red_led
+
+on_boot:
+  then:
+    - light.turn_on:
+      id: red_led_light
+      brightness: 100%
+      transition_length: 0s
